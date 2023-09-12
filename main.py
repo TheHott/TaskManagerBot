@@ -1,35 +1,32 @@
 import asyncio
+import locale
 
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
 from aiogram.fsm.storage.memory import MemoryStorage
-from aiogram.types import Message
 
 import config
-
-# from aiogram.fsm.storage.redis import RedisStorage
-
-TG_TOKEN = config.get_telegram_token()
-bot = Bot(TG_TOKEN, parse_mode=ParseMode.HTML)
-storage = MemoryStorage()
-dp = Dispatcher(storage=storage)
+from entity import models
+from handlers import menu, commands, create_task, drafts, etc, my_tasks, task, edit_task
 
 
-async def start_bot():
+async def main():
+    locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
+    tg_token = config.get_telegram_token()
+
+    bot = Bot(tg_token, parse_mode=ParseMode.HTML)
+    storage = MemoryStorage()
+    dp = Dispatcher(storage=storage)
+    dp.include_routers(menu.router, commands.router, create_task.router,
+                       drafts.router, etc.router, my_tasks.router, task.router,
+                       edit_task.router)
+
+    model_list = [models.User, models.Role, models.Task]
+    models.database.create_tables(model_list)
+
     await dp.start_polling(bot)
-
-
-@dp.message(CommandStart())
-async def command_start(message: Message) -> None:
-    await message.answer("Привет!")
-
-
-@dp.message()
-async def echo_message(message: Message):
-    await message.answer(message.text)
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    asyncio.run(start_bot())
+    asyncio.run(main())

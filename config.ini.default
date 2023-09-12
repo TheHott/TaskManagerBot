@@ -1,2 +1,8 @@
 [telegram]
 token=
+
+[database]
+name=
+host=
+user=
+password=

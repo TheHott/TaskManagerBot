@@ -8,6 +8,17 @@ def get_telegram_token():
     return get_setting('telegram', 'token')
 
 
+def get_db_params() -> dict:
+    db_params = {
+        'name': get_setting('database', 'name'),
+        'host': get_setting('database', 'host'),
+        'user': get_setting('database', 'user'),
+        'password': get_setting('database', 'password')
+    }
+
+    return db_params
+
+
 def get_setting(section, setting, path=CONFIG_FILENAME):
     config = get_config(path)
     if config is None:
