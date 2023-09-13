@@ -81,7 +81,7 @@ class Task(BaseModel):
             message_text += 'Описание не указано\n'
         else:
             message_text += self.description + '\n'
-        message_text += '______________________________________________________\n'
+        message_text += '___________________________________________\n'
 
         if self.date is None:
             message_text += '📅 <b>Дата:</b> не указана; '
