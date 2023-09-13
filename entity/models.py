@@ -5,8 +5,6 @@ import config
 from entity.statuses import TaskStatus
 
 db_params = config.get_db_params()
-print(db_params['host'])
-print(type(db_params['host']))
 database = PostgresqlDatabase(db_params['name'],
                               host=db_params['host'],
                               user=db_params['user'],

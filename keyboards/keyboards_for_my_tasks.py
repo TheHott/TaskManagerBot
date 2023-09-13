@@ -25,7 +25,7 @@ def show_my_tasks(task_list, prefix='', page=1):
     for i in range(first_item_index, last_item_index):
         task = task_list[i]
         builder.row(InlineKeyboardButton(text=task.as_short_str(),
-                                         callback_data="show_task#" + str(task.get_id())))
+                                         callback_data="show_task#" + str(task.get_id()) + "#"))
 
     if page == 1:
         first_page_btn = InlineKeyboardButton(text=" ", callback_data="no_action")
@@ -34,7 +34,7 @@ def show_my_tasks(task_list, prefix='', page=1):
         first_page_btn = InlineKeyboardButton(text="⏮", callback_data=prefix + "_page#1")
         previous_page_btn = InlineKeyboardButton(text="◀️", callback_data=prefix + "_page#" + str(page - 1))
     page_count_btn = InlineKeyboardButton(text=str(page) + '/' + str(amount_of_pages),
-                                          callback_data="enter_page_number")
+                                          callback_data="enter_page_number#" + prefix)
     if page == amount_of_pages:
         next_page_btn = InlineKeyboardButton(text=" ", callback_data="no_action")
         last_page_btn = InlineKeyboardButton(text=" ", callback_data="no_action")

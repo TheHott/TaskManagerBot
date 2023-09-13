@@ -13,3 +13,7 @@ class EditTaskState(StatesGroup):
     entering_new_description = State()
     entering_new_date = State()
     entering_new_time = State()
+
+
+class TaskListState(StatesGroup):
+    entering_page_number = State()

@@ -23,10 +23,6 @@ async def my_tasks(call: CallbackQuery, page: int = 1) -> None:
                                  statuses=[TaskStatus.COMPLETED, TaskStatus.ACTIVE], page=page)
 
 
-# @router.callback_query(F.data == 'enter_page_number')
-# todo
-
-
 async def show_tasks_by_statuses(call: CallbackQuery, prefix='my_tasks', header='Мои задачи',
                                  no_value_text='У вас нет задач!', statuses=None, page: int = 1):
     if len(statuses) == 0 or statuses is None:
