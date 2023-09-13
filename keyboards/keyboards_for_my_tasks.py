@@ -3,6 +3,7 @@ import math
 from aiogram.types import InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from entity.callback_data import PrefixCallbackData, TaskIdCallbackData, PageCallbackData
 
 PAGE_SIZE = 5
 
@@ -25,22 +26,32 @@ def show_my_tasks(task_list, prefix='', page=1):
     for i in range(first_item_index, last_item_index):
         task = task_list[i]
         builder.row(InlineKeyboardButton(text=task.as_short_str(),
-                                         callback_data="show_task#" + str(task.get_id()) + "#"))
+                                         callback_data=TaskIdCallbackData(data="show_task",
+                                                                          task_id=task.get_id()).pack()))
 
     if page == 1:
         first_page_btn = InlineKeyboardButton(text=" ", callback_data="no_action")
         previous_page_btn = InlineKeyboardButton(text=" ", callback_data="no_action")
     else:
-        first_page_btn = InlineKeyboardButton(text="⏮", callback_data=prefix + "_page#1")
-        previous_page_btn = InlineKeyboardButton(text="◀️", callback_data=prefix + "_page#" + str(page - 1))
+        first_page_btn = InlineKeyboardButton(text="⏮",
+                                              callback_data=PageCallbackData(data=prefix + "_page",
+                                                                             page=1).pack())
+        previous_page_btn = InlineKeyboardButton(text="◀️",
+                                                 callback_data=PageCallbackData(data=prefix + "_page",
+                                                                                page=page - 1).pack())
     page_count_btn = InlineKeyboardButton(text=str(page) + '/' + str(amount_of_pages),
-                                          callback_data="enter_page_number#" + prefix)
+                                          callback_data=PrefixCallbackData(data="enter_page_number",
+                                                                           prefix=prefix).pack())
     if page == amount_of_pages:
         next_page_btn = InlineKeyboardButton(text=" ", callback_data="no_action")
         last_page_btn = InlineKeyboardButton(text=" ", callback_data="no_action")
     else:
-        next_page_btn = InlineKeyboardButton(text="▶️", callback_data=prefix + "_page#" + str(page + 1))
-        last_page_btn = InlineKeyboardButton(text="⏭", callback_data=prefix + "_page#" + str(amount_of_pages))
+        next_page_btn = InlineKeyboardButton(text="▶️",
+                                             callback_data=PageCallbackData(data=prefix + "_page",
+                                                                            page=page + 1).pack())
+        last_page_btn = InlineKeyboardButton(text="⏭",
+                                             callback_data=PageCallbackData(data=prefix + "_page",
+                                                                            page=amount_of_pages).pack())
     builder.row(first_page_btn, previous_page_btn, page_count_btn, next_page_btn, last_page_btn)
 
     main_menu_btn = InlineKeyboardButton(text="На главную", callback_data="main_menu")

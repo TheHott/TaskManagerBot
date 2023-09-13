@@ -1,6 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery
 
+from entity.callback_data import PageCallbackData
 from entity.models import User, Task
 from entity.statuses import TaskStatus
 from handlers.menu import main_menu
@@ -9,9 +10,9 @@ from keyboards import keyboards_for_my_tasks
 router = Router()
 
 
-@router.callback_query(F.data.startswith('my_tasks_page#'))
-async def my_tasks_page(call: CallbackQuery) -> None:
-    page = int(call.data.split('#')[1])
+@router.callback_query(PageCallbackData.filter(F.data == 'my_tasks_page'))
+async def my_tasks_page(call: CallbackQuery, callback_data: PageCallbackData) -> None:
+    page = callback_data.page
     await my_tasks(call, page)
 
 
@@ -23,7 +24,8 @@ async def my_tasks(call: CallbackQuery, page: int = 1) -> None:
                                  statuses=[TaskStatus.COMPLETED, TaskStatus.ACTIVE], page=page)
 
 
-async def show_tasks_by_statuses(call: CallbackQuery, prefix='my_tasks', header='Мои задачи',
+async def show_tasks_by_statuses(call: CallbackQuery,
+                                 prefix='my_tasks', header='Мои задачи',
                                  no_value_text='У вас нет задач!', statuses=None, page: int = 1):
     if len(statuses) == 0 or statuses is None:
         task_list = []

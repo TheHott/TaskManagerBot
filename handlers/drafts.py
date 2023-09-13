@@ -2,6 +2,7 @@ from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
+from entity.callback_data import PrefixCallbackData, PageCallbackData
 from entity.statuses import TaskStatus
 from entity.user_state import TaskListState
 from handlers.my_tasks import show_tasks_by_statuses, my_tasks
@@ -10,9 +11,9 @@ from keyboards import keyboards_for_other
 router = Router()
 
 
-@router.callback_query(F.data.startswith('drafts_page#'))
-async def drafts_page(call: CallbackQuery) -> None:
-    page = int(call.data.split('#')[1])
+@router.callback_query(PageCallbackData.filter(F.data == 'drafts_page'))
+async def drafts_page(call: CallbackQuery, callback_data: PageCallbackData) -> None:
+    page = callback_data.page
     await drafts(call, page)
 
 
@@ -24,10 +25,10 @@ async def drafts(call: CallbackQuery, page: int = 1) -> None:
                                  statuses=[TaskStatus.DRAFT], page=page)
 
 
-@router.callback_query(F.data.startswith('enter_page_number#'))
-async def enter_page_number(call: CallbackQuery, state: FSMContext):
+@router.callback_query(PrefixCallbackData.filter(F.data == 'enter_page_number'))
+async def enter_page_number(call: CallbackQuery, callback_data: PrefixCallbackData, state: FSMContext):
     await call.answer()
-    prefix = call.data.split('#')[1]  # my_tasks или drafts
+    prefix = callback_data.prefix  # my_tasks или drafts
     await state.set_state(TaskListState.entering_page_number)
 
     message_to_delete = await call.message.answer(
